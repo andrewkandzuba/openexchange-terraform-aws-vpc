@@ -5,7 +5,7 @@ resource "aws_vpc" "dev-vpc-1" {
   instance_tenancy     = "default"
 
   tags = {
-    Name = "dev-vpc"
+    Name = "dev-vpc-1"
   }
 }
 

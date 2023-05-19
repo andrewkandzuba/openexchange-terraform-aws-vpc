@@ -1,4 +1,4 @@
-resource "aws_instance" "web1" {
+resource "aws_instance" "dev-web-1" {
   ami                    = lookup(var.aims, var.region_names[0])
   instance_type          = "t2.micro"
 
@@ -28,6 +28,10 @@ resource "aws_instance" "web1" {
     user        = var.EC2_USER
     private_key = file(var.PRIVATE_KEY_PATH)
     host = self.public_ip
+  }
+
+  tags = {
+    Name = "dev-web-1"
   }
 }
 

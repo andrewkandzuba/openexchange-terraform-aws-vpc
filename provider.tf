@@ -3,7 +3,9 @@ provider "aws" {
   default_tags {
     tags = {
       Environment = "Dev"
-      Name        = "Provider Tag"
+      Name        = "Provider Tag",
+      Purpose     = "Test"
+      Stack       = "test"
     }
   }
 }
