@@ -1,9 +1,11 @@
-resource "aws_instance" "dev-web-1" {
-  ami                    = lookup(var.aims, var.region_names[0])
-  instance_type          = "t2.micro"
+resource "aws_instance" "cda-instance" {
+  count                  = length(lookup(var.availability_zones_by_region, var.region_name))
+
+  ami                    = lookup(var.aims, var.region_name)
+  instance_type          = var.instance_type
 
   # VPC
-  subnet_id              = aws_subnet.dev-public-subnet-1.id
+  subnet_id              = aws_subnet.cda-public-subnet[count.index].id
 
   # Security Group
   vpc_security_group_ids = [aws_security_group.ssh-allowed.id]
@@ -13,30 +15,57 @@ resource "aws_instance" "dev-web-1" {
 
   # nginx installation
   provisioner "file" {
-    source      = "nginx.sh"
-    destination = "/tmp/nginx.sh"
+    source      = var.boot-script
+    destination = "/tmp/${var.boot-script}"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /tmp/nginx.sh",
-      "sudo /tmp/nginx.sh"
+      "chmod +x /tmp/${var.boot-script}",
+      "sudo /tmp/${var.boot-script}"
     ]
   }
 
   connection {
-    user        = var.EC2_USER
-    private_key = file(var.PRIVATE_KEY_PATH)
+    user        = var.ec2-user
+    private_key = file(var.private-key-path)
     host = self.public_ip
   }
 
   tags = {
-    Name = "dev-web-1"
+    Name = "cda-instance-${count.index}"
   }
 }
 
-// Sends your public key to the instance
-resource "aws_key_pair" "default-region-key-pair" {
-  key_name   = "default-region-key-pair"
-  public_key = file(var.PUBLIC_KEY_PATH)
+resource "aws_security_group" "ssh-allowed" {
+  vpc_id = aws_vpc.cda-vpc.id
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = -1
+    cidr_blocks = [var.all_subnets]
+  }
+
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    // This means, all ip address are allowed to ssh !
+    // Do not do it in the production.
+    // Put your office or home address in it!
+    cidr_blocks = [var.all_subnets]
+  }
+
+  //If you do not add this rule, you can not reach the NGIX
+  ingress {
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = [var.all_subnets]
+  }
+
+  tags = {
+    Name = "ssh-allowed"
+  }
 }

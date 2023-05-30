@@ -1,5 +1,5 @@
 provider "aws" {
-  region = var.region_names[0]
+  region = var.region_name
   default_tags {
     tags = {
       Environment = "Dev"

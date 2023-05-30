@@ -34,6 +34,7 @@ override.tf.json
 terraform.rc
 .terraform.lock.hcl
 terraform.out
+*.plan
 
 # Ignore idea
 .idea

@@ -1,44 +1,52 @@
-variable "region_names" {
-  type = list(string)
-  default = [
-    "us-east-1",
-    "us-west-1"
-  ]
+variable "region_name" {
+  default = "us-east-1"
 }
 
-variable "availability_zone_names" {
-  type    = list(string)
-  default = [
-    "us-east-1a",
-    "us-east-1b",
-    "us-east-1c",
-    "us-west-1a",
-    "us-west-1b",
-    "us-west-1c"
-  ]
+variable "availability_zones_by_region" {
+  type = map(list(string))
+  default = {
+    us-east-1 = ["us-east-1a", "us-east-1b", "us-east-1c"]
+    us-west-1 = ["us-west-1a", "us-west-1b", "us-west-1c"]
+  }
 }
 
 variable "aims" {
   type = map(string)
   default = {
-    us-east-1 = "ami-007855ac798b5175e"
+    us-east-1 = "ami-0715c1897453cabd1"
     us-west-1 = "ami-014d05e6b24240371"
   }
 }
 
-variable "PRIVATE_KEY_PATH" {
+variable "private-key-path" {
   default = "default-region-key-pair"
 }
 
-variable "PUBLIC_KEY_PATH" {
+variable "public-key-path" {
   default = "default-region-key-pair.pub"
 }
 
-variable "EC2_USER" {
+variable "ec2-user" {
   default = "ubuntu"
 }
 
-variable "main_vpc_cidr" {}
-variable "public_subnets" {}
-variable "private_subnets" {}
-variable "all_subnets" {}
+variable "boot-script" {
+  default = "ec2-user-data.sh"
+}
+
+variable "instance_type" {
+  default = "t2.micro"
+}
+
+variable "main_vpc_cidr" {
+  default = "10.0.0.0/16"
+}
+variable "public_subnets" {
+  default = "10.0.1.0/16"
+}
+variable "private_subnets" {
+  default = "10.0.2.0/16"
+}
+variable "all_subnets" {
+  default = "0.0.0.0/0"
+}
