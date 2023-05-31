@@ -16,11 +16,22 @@ This repo contains Terraform (c) project that automates a lot of routine operati
 ```
 
 ## Verify 
+
+### EC2 Instances
+
 ```bash
 > aws ec2 describe-instances --filters "Name=instance-state-name,Values=running" \
- --query 'Reservations[*].Instances[*].[PublicIpAddress]' --output text | | xargs -I %s -- echo %s
+    --query 'Reservations[*].Instances[*].[PublicIpAddress]' --output text | xargs -I %s -- curl %s
 ```
 Check if you can see `Hello, World!` messages
+   
+## EC2 ALB
+
+```bash
+> aws elbv2 describe-load-balancers --query 'LoadBalancers[*].DNSName'  
+    --output text | xargs -I %s -- curl -X GET -H 'Cache-Control: no-cache, no-store' %s 
+```
+Repeat the command and check if you can see `Hello, World!` messages from different hosts. 
 
 ## Destroy
 ```bash
