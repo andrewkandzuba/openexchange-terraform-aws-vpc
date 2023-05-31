@@ -13,6 +13,9 @@ resource "aws_instance" "cda-instance" {
   # the Public SSH key
   key_name               = aws_key_pair.default-region-key-pair.id
 
+  # Public IP assignment
+  associate_public_ip_address = true
+
   # nginx installation
   provisioner "file" {
     source      = var.boot-script

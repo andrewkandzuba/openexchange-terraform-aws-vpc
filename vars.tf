@@ -13,8 +13,8 @@ variable "availability_zones_by_region" {
 variable "aims" {
   type = map(string)
   default = {
-    us-east-1 = "ami-0715c1897453cabd1"
-    us-west-1 = "ami-014d05e6b24240371"
+    us-east-1 = "ami-0bef6cc322bfff646"
+    us-west-1 = "ami-04669a22aad391419"
   }
 }
 
@@ -27,7 +27,7 @@ variable "public-key-path" {
 }
 
 variable "ec2-user" {
-  default = "ubuntu"
+  default = "ec2-user"
 }
 
 variable "boot-script" {
