@@ -10,7 +10,7 @@ variable "availability_zones_by_region" {
   }
 }
 
-variable "aims" {
+variable "ami-image" {
   type = map(string)
   default = {
     us-east-1 = "ami-0bef6cc322bfff646"
@@ -18,12 +18,8 @@ variable "aims" {
   }
 }
 
-variable "private-key-path" {
-  default = "default-region-key-pair"
-}
-
-variable "public-key-path" {
-  default = "default-region-key-pair.pub"
+variable "key_name" {
+  default = "cda-key-pair"
 }
 
 variable "ec2-user" {

@@ -1,7 +1,7 @@
 resource "aws_instance" "cda-instance" {
   count                  = length(lookup(var.availability_zones_by_region, var.region_name))
 
-  ami                    = lookup(var.aims, var.region_name)
+  ami                    = lookup(var.ami-image, var.region_name)
   instance_type          = var.instance_type
 
   # VPC
@@ -11,10 +11,16 @@ resource "aws_instance" "cda-instance" {
   vpc_security_group_ids = [aws_security_group.ssh-allowed.id]
 
   # the Public SSH key
-  key_name               = aws_key_pair.default-region-key-pair.id
+  key_name               = aws_key_pair.generated_key.id
 
   # Public IP assignment
   associate_public_ip_address = true
+
+  # Root EBS volume
+  root_block_device {
+    volume_type = "gp2"
+    volume_size = "8"
+  }
 
   # nginx installation
   provisioner "file" {
@@ -31,7 +37,7 @@ resource "aws_instance" "cda-instance" {
 
   connection {
     user        = var.ec2-user
-    private_key = file(var.private-key-path)
+    private_key = tls_private_key.demo_key.private_key_pem
     host = self.public_ip
   }
 
