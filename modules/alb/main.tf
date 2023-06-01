@@ -3,7 +3,7 @@ resource "aws_lb" "cda-alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]
-  subnets            = [for subnet in aws_subnet.cda-public-subnet : subnet.id]
+  subnets            = var.cda_public_subnets
 
   enable_deletion_protection = false
   enable_cross_zone_load_balancing = true
@@ -17,7 +17,7 @@ resource "aws_lb" "cda-alb" {
 }
 
 resource "aws_lb_target_group" "cad-alb-tg" {
-  vpc_id   = aws_vpc.cda-vpc.id
+  vpc_id   = var.cda_vpc_id
   target_type = "instance"
 
   name     = var.alb_tg["name"]
@@ -47,8 +47,30 @@ resource "aws_lb_listener" "cda-alb-listener" {
 }
 
 resource "aws_lb_target_group_attachment" "cad-tg-at" {
-  count = length(lookup(var.availability_zones_by_region, var.region_name))
+  count = length(var.cda_public_subnets)
 
   target_group_arn = aws_lb_target_group.cad-alb-tg.arn
-  target_id        = aws_instance.cda-instance[count.index].id
+  target_id        = var.cda_instances[count.index]
+}
+
+resource "aws_security_group" "alb_sg" {
+  vpc_id = var.cda_vpc_id
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = -1
+    cidr_blocks = var.all_subnets_cidr
+  }
+
+  ingress {
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = var.all_subnets_cidr
+  }
+
+  tags = {
+    Name = "cda-alb-sg"
+  }
 }
