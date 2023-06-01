@@ -19,6 +19,8 @@ This repo contains Terraform (c) project that automates a lot of routine operati
 
 ### EC2 Instances
 
+**Note:** This does not work when a EC2 security group allow inbound HTTP(S) traffic from ALB only. 
+
 ```bash
 > aws ec2 describe-instances --filters "Name=instance-state-name,Values=running" \
     --query 'Reservations[*].Instances[*].[PublicIpAddress]' --output text | xargs -I %s -- curl %s
