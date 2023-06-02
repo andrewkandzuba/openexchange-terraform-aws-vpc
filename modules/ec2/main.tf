@@ -1,4 +1,4 @@
-resource "aws_instance" "cda-instance" {
+resource "aws_instance" "cda_instance" {
   count                  = length(var.cda_public_subnets)
 
   ami                    = data.aws_ami.amazon_linux_2.id
@@ -11,7 +11,7 @@ resource "aws_instance" "cda-instance" {
   vpc_security_group_ids = var.cda_security_groups
 
   # the Public SSH key
-  key_name               = aws_key_pair.public_key.id
+  key_name = aws_key_pair.ec2_ssh_pub_key.id
 
   # Public IP assignment
   associate_public_ip_address = true
@@ -37,8 +37,8 @@ resource "aws_instance" "cda-instance" {
 
   connection {
     user        = var.ec2-user
-    private_key = tls_private_key.demo_key.private_key_pem
-    host = self.public_ip
+    private_key = tls_private_key.ec2_ssh_pk.private_key_pem
+    host        = self.public_ip
   }
 
   tags = {
@@ -47,15 +47,15 @@ resource "aws_instance" "cda-instance" {
 }
 
 # Generate RSA private key
-resource "tls_private_key" "demo_key" {
+resource "tls_private_key" "ec2_ssh_pk" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 # Sends your public key to the instance
-resource "aws_key_pair" "public_key" {
+resource "aws_key_pair" "ec2_ssh_pub_key" {
   key_name   = var.key_name
-  public_key = tls_private_key.demo_key.public_key_openssh
+  public_key = tls_private_key.ec2_ssh_pk.public_key_openssh
 }
 
 # AMI of the latest Amazon Linux 2
