@@ -12,14 +12,6 @@ variable "alb_tg_health_check" {
     "healthy_threshold" = "3"
   }
 }
-variable "alb_tg" {
-  type = map(string)
-  default = {
-    name = "cad-alb-tg"
-    port = "80"
-    protocol = "HTTP"
-  }
-}
 variable "all_subnets_cidr" {}
 variable "cda_public_subnets" {
   type = list(string)
