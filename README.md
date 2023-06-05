@@ -43,3 +43,7 @@ Repeat the command and check if you can see `Hello, World!` messages from differ
 ```bash
 > terraform apply -auto-approve tf.plan
 ```
+
+# Special Notes
+
+1. AWS warns about the Self Signed ceriticate while deploying the HTTPS endpoint for ALB.
