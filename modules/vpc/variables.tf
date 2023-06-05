@@ -1,6 +1,4 @@
-variable "region_name" {
-  default = "us-east-1"
-}
+variable "region_name" {}
 variable "main_vpc_cidr" {
   default = "172.31.0.0/16"
 }

@@ -39,6 +39,15 @@ Check if you can see `Hello, World!` messages
 ```
 Repeat the command and check if you can see `Hello, World!` messages from different hosts.
 
+- **vpc_with_asg**
+This module demonstrates how to launch the auto-scaling group inside the custom VPC and attach it to the ALB with PLAIN and TLS. 
+```bash
+> aws elbv2 describe-load-balancers --query 'LoadBalancers[*].DNSName' \
+    --output text | xargs -I %s -- curl -X GET -H 'Cache-Control: no-cache, no-store' %s 
+```
+Check if you can see `Hello, World!` messages from different hosts.
+
+
 ## Tear Down 
 ```bash
 > terraform apply -auto-approve tf.plan

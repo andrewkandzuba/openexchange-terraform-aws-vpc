@@ -17,6 +17,3 @@ variable "cda_public_subnets" {
   type = list(string)
 }
 variable "cda_vpc_id" {}
-variable "cda_instances" {
-  type = list(string)
-}

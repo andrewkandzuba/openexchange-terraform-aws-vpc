@@ -1,11 +1,8 @@
+variable "instance_template_name" {
+  default = "cda-instance-template"
+}
 variable "instance_type" {
   default = "t2.micro"
-}
-variable "key_name" {
-  default = "cda-key-pair"
-}
-variable "ec2-user" {
-  default = "ec2-user"
 }
 variable "boot-script" {}
 variable "cda_public_subnets" {
@@ -14,5 +11,5 @@ variable "cda_public_subnets" {
 variable "cda_security_groups" {
   type = list(string)
 }
-variable "cda_availability_zones" {}
 variable "ami_id" {}
+variable "cda_alb_tg_arn" {}
