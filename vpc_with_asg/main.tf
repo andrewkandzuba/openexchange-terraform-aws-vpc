@@ -24,6 +24,13 @@ module "vpc" {
   region_name = var.region_name
 }
 
+module "alb" {
+  source = "../modules/alb"
+  cda_vpc_id = module.vpc.cda_vpc_id
+  cda_public_subnets = module.vpc.cda_public_subnets
+  all_subnets_cidr = [module.vpc.all_subnets_cidr]
+}
+
 resource "aws_security_group" "ec2_sg_http" {
   vpc_id = module.vpc.cda_vpc_id
 
@@ -39,7 +46,8 @@ resource "aws_security_group" "ec2_sg_http" {
     from_port = 80
     to_port = 80
     protocol = "tcp"
-    cidr_blocks = [module.vpc.all_subnets_cidr]
+    # cidr_blocks = [var.all_subnets]
+    security_groups = [module.alb.cda_alb_sg.id]
   }
 
   tags = {
@@ -69,12 +77,12 @@ resource "aws_security_group" "ec2_sg_ssh" {
   }
 }
 
-module "ec2" {
-  source = "../modules/ec2"
+module "asg" {
+  source = "../modules/asg"
 
-  ami_id = module.ami.ami_linux_id
   cda_public_subnets = module.vpc.cda_public_subnets
   cda_security_groups = [aws_security_group.ec2_sg_http.id, aws_security_group.ec2_sg_ssh.id]
-  cda_availability_zones = [module.vpc.cda_availability_zones]
   boot-script = pathexpand("./ec2-user-data.sh")
+  ami_id = module.ami.ami_linux_id
+  cda_alb_tg_arn =  module.alb.cda_alb_tg_arn
 }

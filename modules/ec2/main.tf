@@ -1,7 +1,7 @@
 resource "aws_instance" "cda_instance" {
   count                  = length(var.cda_public_subnets)
 
-  ami                    = data.aws_ami.amazon_linux_2.id
+  ami                    = var.ami_id
   instance_type          = var.instance_type
 
   # VPC
@@ -56,30 +56,4 @@ resource "tls_private_key" "ec2_ssh_pk" {
 resource "aws_key_pair" "ec2_ssh_pub_key" {
   key_name   = var.key_name
   public_key = tls_private_key.ec2_ssh_pk.public_key_openssh
-}
-
-# AMI of the latest Amazon Linux 2
-data "aws_ami" "amazon_linux_2" {
-  most_recent = true
-  owners      = ["amazon"]
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-  filter {
-    name   = "root-device-type"
-    values = ["ebs"]
-  }
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm-*"]
-  }
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-  filter {
-    name   = "block-device-mapping.volume-type"
-    values = ["gp2"]
-  }
 }

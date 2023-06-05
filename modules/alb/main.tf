@@ -46,13 +46,6 @@ resource "aws_lb_listener" "cda_alb_listener_plain" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "cad_tg_at" {
-  count = length(var.cda_public_subnets)
-
-  target_group_arn = aws_lb_target_group.cad_alb_tg.arn
-  target_id        = var.cda_instances[count.index]
-}
-
 resource "aws_security_group" "alb_sg" {
   vpc_id = var.cda_vpc_id
 
