@@ -50,7 +50,7 @@ Check if you can see `Hello, World!` messages from different hosts.
 
 ## Tear Down 
 ```bash
-> terraform apply -auto-approve tf.plan
+> terraform destroy -auto-approve tf.plan
 ```
 
 # Special Notes
