@@ -1,7 +1,3 @@
-variable "region_name" {
-  default = "us-east-1"
-}
-
 provider "aws" {
   region = var.region_name
 
@@ -80,9 +76,11 @@ resource "aws_security_group" "ec2_sg_ssh" {
 module "asg" {
   source = "../modules/asg"
 
+  ami_id = module.ami.ami_linux_id
+
   cda_public_subnets = module.vpc.cda_public_subnets
   cda_security_groups = [aws_security_group.ec2_sg_http.id, aws_security_group.ec2_sg_ssh.id]
-  boot-script = pathexpand("./ec2-user-data.sh")
-  ami_id = module.ami.ami_linux_id
+  boot-script = pathexpand(var.boot-script-file)
+
   cda_alb_tg_arn =  module.alb.cda_alb_tg_arn
 }

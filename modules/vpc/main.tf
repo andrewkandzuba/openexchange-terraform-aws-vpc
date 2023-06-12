@@ -22,16 +22,6 @@ resource "aws_subnet" "cda_public_subnets" {
   }
 }
 
-# Find all available AZs in the given AWS region
-data "aws_availability_zones" "available" {
-  state = "available"
-
-  filter {
-    name = "region-name"
-    values = [var.region_name]
-  }
-}
-
 # IGW and RT
 resource "aws_internet_gateway" "cda-igw" {
   vpc_id = aws_vpc.cda_vpc.id
